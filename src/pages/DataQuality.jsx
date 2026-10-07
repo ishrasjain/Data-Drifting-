@@ -1,154 +1,101 @@
 import { useNavigate, useParams } from "react-router-dom";
-
 import {
   ArrowLeft,
-  Database,
   ShieldCheck,
-  TrendingUp,
   AlertTriangle,
+  Copy,
+  FileWarning,
+  CheckCircle2,
+  XCircle,
   Activity,
-  FileText,
-  Users,
-  Clock,
+  Database,
 } from "lucide-react";
 
-function DatasetDetails() {
+function DataQuality() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // =========================
-  // MOCK HEALTHCARE DATA
-  // =========================
-
+  // Demo data matching the existing Dataset Details data
   const datasets = {
     1: {
       name: "Patient Records",
-      description:
-        "Electronic health records and patient demographics",
-      records: "1.2M",
       quality: 96.4,
-      drift: 12.4,
-      driftLevel: "Low",
+      missing: 2.1,
+      duplicates: 0.4,
       anomalies: 7,
       columns: 24,
-      missing: "2.1%",
-      duplicates: "0.4%",
-      type: "Clinical",
-      updated: "12 min ago",
+      records: "1.2M",
     },
-
     2: {
       name: "Laboratory Results",
-      description:
-        "Clinical laboratory test results and observations",
-      records: "845K",
       quality: 92.7,
-      drift: 28.6,
-      driftLevel: "Medium",
+      missing: 4.8,
+      duplicates: 0.7,
       anomalies: 14,
       columns: 18,
-      missing: "4.8%",
-      duplicates: "0.7%",
-      type: "Laboratory",
-      updated: "38 min ago",
+      records: "845K",
     },
-
     3: {
       name: "Medication Records",
-      description:
-        "Prescriptions, medications and treatment information",
-      records: "320K",
       quality: 81.3,
-      drift: 67.2,
-      driftLevel: "High",
+      missing: 9.4,
+      duplicates: 2.1,
       anomalies: 31,
       columns: 16,
-      missing: "9.4%",
-      duplicates: "2.1%",
-      type: "Medication",
-      updated: "1 hour ago",
+      records: "320K",
     },
-
     4: {
       name: "Hospital Admissions",
-      description:
-        "Patient admission, discharge and hospitalization data",
-      records: "567K",
       quality: 95.1,
-      drift: 10.2,
-      driftLevel: "Low",
+      missing: 2.8,
+      duplicates: 0.3,
       anomalies: 5,
       columns: 21,
-      missing: "2.8%",
-      duplicates: "0.3%",
-      type: "Hospital",
-      updated: "2 hours ago",
+      records: "567K",
     },
-
     5: {
       name: "Clinical Observations",
-      description:
-        "Vital signs and clinical observations",
-      records: "2.4M",
       quality: 89.6,
-      drift: 34.8,
-      driftLevel: "Medium",
+      missing: 5.6,
+      duplicates: 0.9,
       anomalies: 18,
       columns: 27,
-      missing: "5.6%",
-      duplicates: "0.9%",
-      type: "Clinical",
-      updated: "3 hours ago",
+      records: "2.4M",
     },
   };
 
   const dataset = datasets[id] || datasets[1];
 
-  // =========================
-  // STATUS
-  // =========================
+  const completeness = (100 - dataset.missing).toFixed(1);
 
-  let status = "Critical";
-
-  if (
-    dataset.quality >= 90 &&
-    dataset.driftLevel === "Low"
-  ) {
-    status = "Healthy";
-  } else if (
-    dataset.quality >= 85 &&
-    dataset.driftLevel !== "High"
-  ) {
-    status = "Warning";
-  }
-
-  // =========================
-  // NAVIGATION
-  // =========================
-
-  const goBack = () => {
-    navigate("/datasets");
+  const getStatus = () => {
+    if (dataset.quality >= 90) return "Healthy";
+    if (dataset.quality >= 85) return "Warning";
+    return "Critical";
   };
 
-  const goOverview = () => {
+  const status = getStatus();
+
+  const goBack = () => {
     navigate(`/datasets/${id}`);
   };
 
-  const goProfiling = () => {
-    navigate(`/datasets/${id}/profiling`);
+  const getStatusColor = () => {
+    if (status === "Healthy") return "text-emerald-400";
+    if (status === "Warning") return "text-amber-400";
+    return "text-red-400";
   };
 
-  const goQuality = () => {
-    navigate(`/datasets/${id}/quality`);
+  const getQualityColor = () => {
+    if (dataset.quality >= 90) return "bg-emerald-500";
+    if (dataset.quality >= 85) return "bg-amber-500";
+    return "bg-red-500";
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white">
 
-      {/* =========================
-          HEADER
-      ========================= */}
-
+      {/* HEADER */}
       <header className="h-20 border-b border-slate-800 bg-slate-900 flex items-center justify-between px-8">
 
         <div className="flex items-center gap-4">
@@ -162,70 +109,518 @@ function DatasetDetails() {
           </button>
 
           <div>
-
             <div className="flex items-center gap-2">
-
-              <Database
+              <ShieldCheck
                 size={16}
-                className="text-blue-400"
+                className="text-emerald-400"
               />
 
               <span className="text-xs text-slate-500">
-                Healthcare Dataset
+                Data Quality Analysis
               </span>
-
             </div>
 
             <h1 className="text-xl font-bold mt-1">
               {dataset.name}
             </h1>
-
           </div>
 
         </div>
 
         <div className="flex items-center gap-2 text-xs text-emerald-400">
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          Analysis available
+          Analysis complete
         </div>
 
       </header>
 
 
-      {/* =========================
-          MAIN
-      ========================= */}
-
+      {/* MAIN */}
       <main className="p-8 max-w-[1600px] mx-auto">
 
-        {/* INTRO */}
-
+        {/* TITLE */}
         <div className="mb-8">
 
-          <p className="text-xs text-blue-400 uppercase tracking-wider">
-            Dataset Details
+          <p className="text-xs text-emerald-400 uppercase tracking-wider">
+            Data Quality
           </p>
 
-          <h2 className="text-2xl font-bold mt-2">
-            {dataset.name}
+          <h2 className="text-3xl font-bold mt-2">
+            Data Quality Analysis
           </h2>
 
           <p className="text-sm text-slate-500 mt-2">
-            {dataset.description}
+            Review completeness, validity, consistency and uniqueness
+            of your dataset.
           </p>
 
         </div>
 
 
-        {/* =========================
-            SUMMARY CARDS
-        ========================= */}
-
+        {/* TOP CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
 
-          {/* Records */}
+          {/* QUALITY SCORE */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
+            <div className="flex items-center justify-between">
+
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <ShieldCheck
+                  size={20}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <span className={`text-xs ${getStatusColor()}`}>
+                {status}
+              </span>
+
+            </div>
+
+            <p className="text-xs text-slate-500 mt-5">
+              Overall Quality Score
+            </p>
+
+            <h3 className="text-3xl font-bold mt-1">
+              {dataset.quality}%
+            </h3>
+
+            <div className="w-full h-2 bg-slate-800 rounded-full mt-4 overflow-hidden">
+              <div
+                className={`h-full ${getQualityColor()} rounded-full`}
+                style={{ width: `${dataset.quality}%` }}
+              />
+            </div>
+
+          </div>
+
+
+          {/* MISSING */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+              <FileWarning
+                size={20}
+                className="text-amber-400"
+              />
+            </div>
+
+            <p className="text-xs text-slate-500 mt-5">
+              Missing Values
+            </p>
+
+            <h3 className="text-3xl font-bold mt-1">
+              {dataset.missing}%
+            </h3>
+
+            <p className="text-xs text-amber-400 mt-2">
+              Requires attention
+            </p>
+
+          </div>
+
+
+          {/* DUPLICATES */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+              <Copy
+                size={20}
+                className="text-blue-400"
+              />
+            </div>
+
+            <p className="text-xs text-slate-500 mt-5">
+              Duplicate Records
+            </p>
+
+            <h3 className="text-3xl font-bold mt-1">
+              {dataset.duplicates}%
+            </h3>
+
+            <p className="text-xs text-blue-400 mt-2">
+              Duplicate data detected
+            </p>
+
+          </div>
+
+
+          {/* ANOMALIES */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+              <AlertTriangle
+                size={20}
+                className="text-red-400"
+              />
+            </div>
+
+            <p className="text-xs text-slate-500 mt-5">
+              Anomalies
+            </p>
+
+            <h3 className="text-3xl font-bold mt-1">
+              {dataset.anomalies}
+            </h3>
+
+            <p className="text-xs text-red-400 mt-2">
+              Issues detected
+            </p>
+
+          </div>
+
+        </div>
+
+
+        {/* QUALITY DIMENSIONS */}
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 mb-8">
+
+          <div className="flex items-center justify-between mb-6">
+
+            <div>
+              <h3 className="font-semibold">
+                Quality Dimensions
+              </h3>
+
+              <p className="text-xs text-slate-500 mt-1">
+                Key dimensions used to evaluate dataset quality
+              </p>
+            </div>
+
+            <Activity
+              size={19}
+              className="text-emerald-400"
+            />
+
+          </div>
+
+
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+
+            {/* COMPLETENESS */}
+            <div className="bg-slate-950 border border-slate-800 rounded-lg p-5">
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  Completeness
+                </span>
+
+                <CheckCircle2
+                  size={17}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <p className="text-2xl font-bold mt-4">
+                {completeness}%
+              </p>
+
+              <div className="w-full h-1.5 bg-slate-800 rounded-full mt-3">
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: `${completeness}%` }}
+                />
+              </div>
+
+              <p className="text-xs text-slate-500 mt-3">
+                Based on missing values
+              </p>
+
+            </div>
+
+
+            {/* VALIDITY */}
+            <div className="bg-slate-950 border border-slate-800 rounded-lg p-5">
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  Validity
+                </span>
+
+                <CheckCircle2
+                  size={17}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <p className="text-2xl font-bold mt-4">
+                98.2%
+              </p>
+
+              <div className="w-full h-1.5 bg-slate-800 rounded-full mt-3">
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: "98.2%" }}
+                />
+              </div>
+
+              <p className="text-xs text-slate-500 mt-3">
+                Values follow expected formats
+              </p>
+
+            </div>
+
+
+            {/* CONSISTENCY */}
+            <div className="bg-slate-950 border border-slate-800 rounded-lg p-5">
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  Consistency
+                </span>
+
+                <CheckCircle2
+                  size={17}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <p className="text-2xl font-bold mt-4">
+                97.5%
+              </p>
+
+              <div className="w-full h-1.5 bg-slate-800 rounded-full mt-3">
+                <div
+                  className="h-full bg-emerald-500 rounded-full"
+                  style={{ width: "97.5%" }}
+                />
+              </div>
+
+              <p className="text-xs text-slate-500 mt-3">
+                Data values remain consistent
+              </p>
+
+            </div>
+
+
+            {/* UNIQUENESS */}
+            <div className="bg-slate-950 border border-slate-800 rounded-lg p-5">
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  Uniqueness
+                </span>
+
+                {dataset.duplicates <= 1 ? (
+                  <CheckCircle2
+                    size={17}
+                    className="text-emerald-400"
+                  />
+                ) : (
+                  <XCircle
+                    size={17}
+                    className="text-red-400"
+                  />
+                )}
+              </div>
+
+              <p className="text-2xl font-bold mt-4">
+                {(100 - dataset.duplicates).toFixed(1)}%
+              </p>
+
+              <div className="w-full h-1.5 bg-slate-800 rounded-full mt-3">
+                <div
+                  className="h-full bg-blue-500 rounded-full"
+                  style={{
+                    width: `${100 - dataset.duplicates}%`,
+                  }}
+                />
+              </div>
+
+              <p className="text-xs text-slate-500 mt-3">
+                Based on duplicate records
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* TWO COLUMN SECTION */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 mb-8">
+
+          {/* ISSUES */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+            <div className="flex items-center gap-3 mb-6">
+
+              <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                <AlertTriangle
+                  size={19}
+                  className="text-red-400"
+                />
+              </div>
+
+              <div>
+                <h3 className="font-semibold">
+                  Issues Detected
+                </h3>
+
+                <p className="text-xs text-slate-500 mt-1">
+                  Data quality issues requiring attention
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="space-y-3">
+
+              <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg p-4">
+
+                <div>
+                  <p className="text-sm">
+                    Missing Values
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    {dataset.missing}% of dataset values are missing
+                  </p>
+                </div>
+
+                <span className="text-xs text-amber-400">
+                  Review
+                </span>
+
+              </div>
+
+
+              <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg p-4">
+
+                <div>
+                  <p className="text-sm">
+                    Duplicate Records
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    {dataset.duplicates}% duplicate records found
+                  </p>
+                </div>
+
+                <span className="text-xs text-blue-400">
+                  Review
+                </span>
+
+              </div>
+
+
+              <div className="flex items-center justify-between bg-slate-950 border border-slate-800 rounded-lg p-4">
+
+                <div>
+                  <p className="text-sm">
+                    Anomalous Records
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    {dataset.anomalies} unusual records detected
+                  </p>
+                </div>
+
+                <span className="text-xs text-red-400">
+                  Investigate
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          {/* RECOMMENDATIONS */}
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+            <div className="flex items-center gap-3 mb-6">
+
+              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                <ShieldCheck
+                  size={19}
+                  className="text-emerald-400"
+                />
+              </div>
+
+              <div>
+                <h3 className="font-semibold">
+                  Recommendations
+                </h3>
+
+                <p className="text-xs text-slate-500 mt-1">
+                  Suggested actions to improve quality
+                </p>
+              </div>
+
+            </div>
+
+
+            <div className="space-y-4">
+
+              <div className="flex gap-3">
+                <CheckCircle2
+                  size={18}
+                  className="text-emerald-400 mt-0.5"
+                />
+
+                <div>
+                  <p className="text-sm">
+                    Review missing values
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    Investigate columns with high missing-value rates.
+                  </p>
+                </div>
+              </div>
+
+
+              <div className="flex gap-3">
+                <CheckCircle2
+                  size={18}
+                  className="text-emerald-400 mt-0.5"
+                />
+
+                <div>
+                  <p className="text-sm">
+                    Remove duplicate records
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    Deduplicate records before downstream analysis.
+                  </p>
+                </div>
+              </div>
+
+
+              <div className="flex gap-3">
+                <CheckCircle2
+                  size={18}
+                  className="text-emerald-400 mt-0.5"
+                />
+
+                <div>
+                  <p className="text-sm">
+                    Investigate anomalies
+                  </p>
+
+                  <p className="text-xs text-slate-500 mt-1">
+                    Review unusual records detected during analysis.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        {/* DATASET SUMMARY */}
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+
+          <div className="flex items-center gap-3 mb-6">
 
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
               <Database
@@ -234,400 +629,71 @@ function DatasetDetails() {
               />
             </div>
 
-            <p className="text-xs text-slate-500 mt-5">
-              Total Records
-            </p>
+            <div>
+              <h3 className="font-semibold">
+                Dataset Summary
+              </h3>
 
-            <h3 className="text-2xl font-bold mt-1">
-              {dataset.records}
-            </h3>
-
-            <p className="text-xs text-slate-600 mt-2">
-              Records in dataset
-            </p>
-
-          </div>
-
-
-          {/* Quality */}
-
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <ShieldCheck
-                size={19}
-                className="text-emerald-400"
-              />
-            </div>
-
-            <p className="text-xs text-slate-500 mt-5">
-              Data Quality
-            </p>
-
-            <h3 className="text-2xl font-bold mt-1">
-              {dataset.quality}%
-            </h3>
-
-            <p className="text-xs text-emerald-400 mt-2">
-              {status}
-            </p>
-
-          </div>
-
-
-          {/* Drift */}
-
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <TrendingUp
-                size={19}
-                className="text-blue-400"
-              />
-            </div>
-
-            <p className="text-xs text-slate-500 mt-5">
-              Drift Score
-            </p>
-
-            <h3 className="text-2xl font-bold mt-1">
-              {dataset.drift}%
-            </h3>
-
-            <p
-              className={`text-xs mt-2 ${
-                dataset.driftLevel === "Low"
-                  ? "text-blue-400"
-                  : dataset.driftLevel === "Medium"
-                  ? "text-amber-400"
-                  : "text-red-400"
-              }`}
-            >
-              {dataset.driftLevel} distribution shift
-            </p>
-
-          </div>
-
-
-          {/* Anomalies */}
-
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-5">
-
-            <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
-              <AlertTriangle
-                size={19}
-                className="text-red-400"
-              />
-            </div>
-
-            <p className="text-xs text-slate-500 mt-5">
-              Active Anomalies
-            </p>
-
-            <h3 className="text-2xl font-bold mt-1">
-              {dataset.anomalies}
-            </h3>
-
-            <p className="text-xs text-red-400 mt-2">
-              Detected during latest analysis
-            </p>
-
-          </div>
-
-        </div>
-
-
-        {/* =========================
-            DATASET INFORMATION
-        ========================= */}
-
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-8">
-
-          <div className="xl:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6">
-
-            <div className="flex items-center justify-between mb-6">
-
-              <div>
-
-                <h3 className="font-semibold">
-                  Dataset Overview
-                </h3>
-
-                <p className="text-xs text-slate-500 mt-1">
-                  Summary of the healthcare dataset
-                </p>
-
-              </div>
-
-              <Activity
-                size={18}
-                className="text-blue-400"
-              />
-
-            </div>
-
-
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-
-              <div>
-                <p className="text-xs text-slate-500">
-                  Dataset Type
-                </p>
-                <p className="text-sm font-medium mt-1">
-                  {dataset.type}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-500">
-                  Columns
-                </p>
-                <p className="text-sm font-medium mt-1">
-                  {dataset.columns}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-500">
-                  Missing Values
-                </p>
-                <p className="text-sm font-medium mt-1">
-                  {dataset.missing}
-                </p>
-              </div>
-
-              <div>
-                <p className="text-xs text-slate-500">
-                  Duplicates
-                </p>
-                <p className="text-sm font-medium mt-1">
-                  {dataset.duplicates}
-                </p>
-              </div>
-
+              <p className="text-xs text-slate-500 mt-1">
+                Basic information about the analyzed dataset
+              </p>
             </div>
 
           </div>
 
 
-          {/* Last Updated */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
 
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <div>
+              <p className="text-xs text-slate-500">
+                Dataset
+              </p>
 
-            <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <Clock
-                size={19}
-                className="text-purple-400"
-              />
+              <p className="text-sm font-medium mt-1">
+                {dataset.name}
+              </p>
             </div>
 
-            <p className="text-xs text-slate-500 mt-5">
-              Last Analysis
-            </p>
 
-            <h3 className="text-lg font-semibold mt-1">
-              {dataset.updated}
-            </h3>
+            <div>
+              <p className="text-xs text-slate-500">
+                Records
+              </p>
 
-            <p className="text-xs text-slate-600 mt-2">
-              Latest dataset analysis
-            </p>
-
-          </div>
-
-        </div>
-
-
-        {/* =========================
-            TABS
-        ========================= */}
-
-        <div className="border-b border-slate-800 mb-8">
-
-          <div className="flex gap-8 overflow-x-auto">
-
-            {/* Overview */}
-
-            <button
-              type="button"
-              onClick={goOverview}
-              className="pb-4 text-sm font-medium text-blue-400 border-b-2 border-blue-500 whitespace-nowrap cursor-pointer"
-            >
-              Overview
-            </button>
-
-
-            {/* Profiling */}
-
-            <button
-              type="button"
-              onClick={goProfiling}
-              className="pb-4 text-sm text-slate-400 hover:text-white transition whitespace-nowrap cursor-pointer"
-            >
-              Profiling
-            </button>
-
-
-            {/* Data Quality */}
-
-            <button
-              type="button"
-              onClick={goQuality}
-              className="pb-4 text-sm text-slate-400 hover:text-white transition whitespace-nowrap cursor-pointer"
-            >
-              Data Quality
-            </button>
-
-          </div>
-
-        </div>
-
-
-        {/* =========================
-            ANALYSIS CARDS
-        ========================= */}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-
-          {/* Profiling */}
-
-          <button
-            type="button"
-            onClick={goProfiling}
-            className="text-left bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-blue-500/40 hover:bg-slate-900/80 transition cursor-pointer"
-          >
-
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <Activity
-                size={19}
-                className="text-blue-400"
-              />
+              <p className="text-sm font-medium mt-1">
+                {dataset.records}
+              </p>
             </div>
 
-            <h3 className="font-semibold mt-5">
-              Data Profiling
-            </h3>
 
-            <p className="text-sm text-slate-500 mt-2">
-              Explore statistics, distributions and feature-level information.
-            </p>
+            <div>
+              <p className="text-xs text-slate-500">
+                Columns
+              </p>
 
-            <p className="text-xs text-blue-400 mt-5">
-              Open profiling →
-            </p>
-
-          </button>
-
-
-          {/* Data Quality */}
-
-          <button
-            type="button"
-            onClick={goQuality}
-            className="text-left bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-emerald-500/40 hover:bg-slate-900/80 transition cursor-pointer"
-          >
-
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-              <ShieldCheck
-                size={19}
-                className="text-emerald-400"
-              />
+              <p className="text-sm font-medium mt-1">
+                {dataset.columns}
+              </p>
             </div>
 
-            <h3 className="font-semibold mt-5">
-              Data Quality
-            </h3>
 
-            <p className="text-sm text-slate-500 mt-2">
-              Review completeness, validity, consistency and uniqueness.
-            </p>
+            <div>
+              <p className="text-xs text-slate-500">
+                Quality Status
+              </p>
 
-            <p className="text-xs text-emerald-400 mt-5">
-              Open quality analysis →
-            </p>
-
-          </button>
-
-
-          {/* Dataset Information */}
-
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-
-            <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center">
-              <FileText
-                size={19}
-                className="text-purple-400"
-              />
+              <p className={`text-sm font-medium mt-1 ${getStatusColor()}`}>
+                {status}
+              </p>
             </div>
-
-            <h3 className="font-semibold mt-5">
-              Dataset Information
-            </h3>
-
-            <div className="space-y-4 mt-5">
-
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500">
-                  Records
-                </span>
-
-                <span className="text-sm">
-                  {dataset.records}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500">
-                  Columns
-                </span>
-
-                <span className="text-sm">
-                  {dataset.columns}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-slate-500">
-                  Type
-                </span>
-
-                <span className="text-sm">
-                  {dataset.type}
-                </span>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-
-        {/* =========================
-            FOOTER INFO
-        ========================= */}
-
-        <div className="mt-8 bg-slate-900 border border-slate-800 rounded-xl p-5">
-
-          <div className="flex items-center gap-3">
-
-            <Users
-              size={18}
-              className="text-slate-500"
-            />
-
-            <p className="text-xs text-slate-500">
-              This is currently using frontend mock data. Backend/API integration can be connected later.
-            </p>
 
           </div>
 
         </div>
 
       </main>
-
     </div>
   );
 }
 
-export default DatasetDetails;
+export default DataQuality;

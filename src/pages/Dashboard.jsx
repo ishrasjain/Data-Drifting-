@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -21,8 +22,87 @@ import {
 function Dashboard() {
   const navigate = useNavigate();
 
+  const [activePanel, setActivePanel] = useState(null);
+
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex">
+    <div className="min-h-screen bg-slate-950 text-white flex relative overflow-hidden">
+
+  <style>{`
+    @keyframes dashboardGrid {
+      from {
+        transform: translateY(0);
+      }
+      to {
+        transform: translateY(50px);
+      }
+    }
+
+    @keyframes dashboardFloat {
+      0%, 100% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(35px, -25px) scale(1.08);
+      }
+    }
+
+    @keyframes dashboardFloatTwo {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(-40px, 30px);
+      }
+    }
+
+    @keyframes dashboardPulse {
+      0%, 100% {
+        opacity: .18;
+      }
+      50% {
+        opacity: .45;
+      }
+    }
+
+    .dashboard-grid {
+      background-image:
+        linear-gradient(rgba(59,130,246,.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,.045) 1px, transparent 1px);
+      background-size: 55px 55px;
+      animation: dashboardGrid 14s linear infinite;
+    }
+
+    .dashboard-glow-one {
+      animation: dashboardFloat 10s ease-in-out infinite;
+    }
+
+    .dashboard-glow-two {
+      animation: dashboardFloatTwo 12s ease-in-out infinite;
+    }
+
+    .dashboard-pulse {
+      animation: dashboardPulse 4s ease-in-out infinite;
+    }
+  `}</style>
+
+  {/* Animated grid */}
+  <div className="dashboard-grid fixed inset-0 pointer-events-none" />
+
+  {/* Blue glow */}
+  <div className="dashboard-glow-one fixed -top-40 left-72 w-[420px] h-[420px] bg-blue-600/10 blur-3xl rounded-full pointer-events-none" />
+
+  {/* Purple glow */}
+  <div className="dashboard-glow-two fixed top-1/3 right-0 w-[400px] h-[400px] bg-indigo-600/10 blur-3xl rounded-full pointer-events-none" />
+
+  {/* Cyan glow */}
+  <div className="dashboard-glow-one fixed bottom-[-150px] left-1/3 w-[350px] h-[350px] bg-cyan-500/5 blur-3xl rounded-full pointer-events-none" />
+
+  {/* Small glowing particles */}
+  <div className="dashboard-pulse fixed top-28 left-[43%] w-1.5 h-1.5 rounded-full bg-blue-400 shadow-lg shadow-blue-500/70 pointer-events-none" />
+
+  <div className="dashboard-pulse fixed top-[55%] right-[20%] w-1 h-1 rounded-full bg-cyan-300 shadow-lg shadow-cyan-400/70 pointer-events-none" />
+
+  <div className="dashboard-pulse fixed bottom-[18%] left-[32%] w-1 h-1 rounded-full bg-indigo-300 shadow-lg shadow-indigo-400/70 pointer-events-none" />
 
       {/* ================= SIDEBAR ================= */}
 
@@ -98,8 +178,9 @@ function Dashboard() {
           {/* DATA QUALITY */}
 
           <button
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition"
-          >
+  onClick={() => navigate("/datasets/1/quality")}
+  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 ..."
+>
 
             <ShieldCheck size={18} />
 
@@ -113,6 +194,7 @@ function Dashboard() {
           {/* DATA DRIFT */}
 
           <button
+          onClick={() => navigate("/datasets/1/drift")}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition"
           >
 
@@ -128,6 +210,7 @@ function Dashboard() {
           {/* ANOMALIES */}
 
           <button
+          onClick={() => navigate("/datasets/1/anomalies")}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition"
           >
 
@@ -143,6 +226,7 @@ function Dashboard() {
           {/* RECOMMENDATIONS */}
 
           <button
+          onClick={() => navigate("/datasets/1/recommendations")}
             className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition"
           >
 

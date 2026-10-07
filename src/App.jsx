@@ -11,6 +11,7 @@ import Datasets from "./pages/Datasets.jsx";
 import DatasetDetails from "./pages/DatasetDetails.jsx";
 import DataProfiling from "./pages/DataProfiling.jsx";
 import DataQuality from "./pages/DataQuality.jsx";
+import FeaturePage from "./pages/FeaturePage.jsx";
 
 function App() {
   return (
@@ -50,6 +51,23 @@ function App() {
         <Route
           path="/datasets/:id/quality"
           element={<DataQuality />}
+        />
+
+        {/* Feature Pages */}
+
+        <Route
+          path="/datasets/:id/drift"
+          element={<FeaturePage type="drift" />}
+        />
+
+        <Route
+          path="/datasets/:id/anomalies"
+          element={<FeaturePage type="anomalies" />}
+        />
+
+        <Route
+          path="/datasets/:id/recommendations"
+          element={<FeaturePage type="recommendations" />}
         />
 
       </Routes>
